@@ -6,8 +6,9 @@ wait_and_execute
 				
 do_task(task)				
 	//stop condition			
-	if task is empty return			
-		return task;		
+	if task is small enough
+		do task directly
+		return task_done;		
 				
 	//divide			
 	divide to subtask_1 and subtask_2			
