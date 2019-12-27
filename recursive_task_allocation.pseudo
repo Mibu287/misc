@@ -1,0 +1,44 @@
+wait_and_execute				
+	while task_done_flag = false			
+		task, promise = task_stack.pop()		
+		task_done = do_task(new_task)		
+		promise.set_value(task_done)		
+				
+do_task(task)				
+	//stop condition			
+	if task is empty return			
+		return task;		
+				
+	//divide			
+	divide to subtask_1 and subtask_2			
+	wrap sub_task2 to task_wrapper (which contain the task and a promise)			
+	get corresponding future			
+	push task_wrapper to task_stack			
+	if(thread_num < max_thread_num)			
+		launch new thread(wait_and_execute)		
+				
+	//conquer			
+	do_task(subtask_1)			
+				
+	while future not ready			
+		new_task, promise = task_stack.pop		
+		new_task_done = do_task(new_task)		
+		promise.set_value(new_task_done)		
+				
+	//consolidate			
+	consolidate subtask_1 and subtask_2			
+	return task_done			
+				
+caller(task)				
+	//prepare			
+	initialize thread container			
+	initialize task_stack			
+	initialize task_done_flag			
+				
+	//execute task			
+	do_task(task)			
+				
+	//end function and clean up			
+	task_done_flag = true			
+	join other threads			
+	return task_done			
