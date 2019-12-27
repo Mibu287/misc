@@ -1,3 +1,14 @@
+/*
+Algorithms which divide task to multiple independent sub-tasks and execute recursively 
+may employ this pseudo code to allocate sub-tasks among multiple threads.
+
+The main idea is that: 
+A task is divided into n sub-tasks. In which (n - 1) sub-tasks are pushed into task stack. 
+Only 1 task is executed immidiately by the same thread.
+After task 1 is done, check if other task is done? if not, pop task stack and execute new task.
+When all subtask is done, consolidate done task and set status (via promise/future pair or similar medium).
+*/
+
 wait_and_execute				
 	while task_done_flag = false			
 		task, promise = task_stack.pop()		
@@ -11,23 +22,23 @@ do_task(task)
 		return task_done;		
 				
 	//divide			
-	divide to subtask_1 and subtask_2			
-	wrap sub_task2 to task_wrapper (which contain the task and a promise)			
-	get corresponding future			
-	push task_wrapper to task_stack			
+	divide to subtask_1, subtask_2, ..., subtask_n			
+	wrap sub_task2 ... subtask_n to task_wrappers (which contain the task and a promise)			
+	get corresponding futures			
+	push task_wrappers to task_stack			
 	if(thread_num < max_thread_num)			
 		launch new thread(wait_and_execute)		
 				
 	//conquer			
 	do_task(subtask_1)			
 				
-	while future not ready			
+	while futures not ready			
 		new_task, promise = task_stack.pop		
 		new_task_done = do_task(new_task)		
 		promise.set_value(new_task_done)		
 				
 	//consolidate			
-	consolidate subtask_1 and subtask_2			
+	consolidate subtask_1 and subtask_2 ... subtask_n			
 	return task_done			
 				
 caller(task)				
